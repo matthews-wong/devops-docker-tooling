@@ -1,0 +1,7 @@
+# keep the build context small: no git metadata, no local working notes,
+# no editor cruft
+.git
+**/.gitignore
+**/*.md~
+*.swp
+.DS_Store
