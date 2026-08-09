@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>docker-tooling lab</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 42rem; margin: 4rem auto; padding: 0 1rem; color: #222; }
+    code { background: #f4f4f5; padding: 0.15rem 0.4rem; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <h1>static site container</h1>
+  <p>Served from a pinned <code>nginx:1.27-alpine</code> image running as an
+  unprivileged user, with a built-in healthcheck.</p>
+  <p>Probe: <code>curl -s localhost:8080/healthz</code></p>
+</body>
+</html>
