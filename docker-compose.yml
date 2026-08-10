@@ -1,6 +1,11 @@
 services:
   site:
-    build: .
+    build:
+      context: .
+      args:
+        # Stamp the image at build time: BUILD_VERSION=v1.2.0 docker compose build
+        BUILD_VERSION: ${BUILD_VERSION:-dev}
+        BUILD_DATE: ${BUILD_DATE:-unknown}
     ports:
       - "8080:8080"
     restart: unless-stopped
