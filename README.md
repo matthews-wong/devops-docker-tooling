@@ -47,7 +47,12 @@ BUILD_VERSION=v1.2.0 ./scripts/render.sh > /tmp/index.html
 
 ## Design notes
 
-- **Pinned base image** — `nginx:1.27-alpine`, never `latest`.
+- **Digest-pinned base image** — both stages reference
+  `nginx:1.27-alpine@sha256:...`; the tag is kept for readability but the
+  digest is what the build and runtime actually resolve to, so a rebuild
+  today and in six months produces the same base layer even if the tag
+  moves. `scripts/check-pins.sh` enforces this on every `make validate`
+  — an unpinned `FROM` line fails the check.
 - **Multi-stage build** — a short-lived build stage renders the landing
   page template with build metadata; only the finished content crosses
   into the runtime stage. The runtime image stays a plain static server.
@@ -61,8 +66,9 @@ BUILD_VERSION=v1.2.0 ./scripts/render.sh > /tmp/index.html
 ## Validation
 
 ```bash
-make validate                                # hadolint + template render
+make validate                                # hadolint + pin check + render
 hadolint Dockerfile                          # image-lint (run locally)
+scripts/check-pins.sh                        # digest-pin check (part of validate)
 docker compose config                        # syntax-check the compose file
 ```
 
