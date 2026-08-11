@@ -3,7 +3,7 @@ SHELL := /bin/sh
 BUILD_VERSION ?= dev
 BUILD_DATE ?= $(shell date -u +%Y-%m-%d)
 
-.PHONY: build build-release up down logs lint validate render
+.PHONY: build build-release up down logs lint check-pins validate render
 
 build:
 	docker build -t docker-tooling-site .
@@ -30,5 +30,8 @@ render:
 lint:
 	hadolint Dockerfile
 
-validate: lint render
+check-pins:
+	scripts/check-pins.sh
+
+validate: lint check-pins render
 	docker compose config --quiet
