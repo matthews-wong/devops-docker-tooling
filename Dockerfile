@@ -3,7 +3,9 @@
 # ---- builder: render the landing page with build metadata ----
 # nginx:alpine ships envsubst (used by its /etc/nginx/templates feature),
 # so no extra packages are needed to template content at build time.
-FROM nginx:1.27-alpine AS build
+# Digest-pinned: reproducible builds even if the tag moves. Bump with
+# `docker buildx imagetools inspect nginx:1.27-alpine` and update both stages.
+FROM nginx:1.27-alpine@sha256:65645c7bb6a0661892a8b03b89d0743208a18dd2f3f17a54ef4b76fb8e2f2a10 AS build
 
 ARG BUILD_VERSION=dev
 ARG BUILD_DATE=unknown
@@ -14,7 +16,7 @@ RUN /tmp/render.sh /src/index.html > /src/index.html.rendered \
     && mv /src/index.html.rendered /src/index.html
 
 # ---- runtime: minimal static server ----
-FROM nginx:1.27-alpine
+FROM nginx:1.27-alpine@sha256:65645c7bb6a0661892a8b03b89d0743208a18dd2f3f17a54ef4b76fb8e2f2a10
 
 # nginx needs writable cache/pid dirs; runtime user comes from the base image.
 # Remove the default config so the port + server block below are the only one.
