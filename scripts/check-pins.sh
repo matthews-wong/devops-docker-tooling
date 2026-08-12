@@ -17,8 +17,11 @@ while IFS= read -r line || [ -n "$line" ]; do
     FROM*)
       # shellcheck disable=SC2086
       set -- $line
-      # $1=FROM, $2=image[@digest], $3=alias(optional)
-      image="$2"
+      shift  # drop FROM
+      # Skip build flags that can precede the image (--platform=...,
+      # --os=..., --architecture=...), e.g. multi-arch builds.
+      while [ "${1#--}" != "$1" ]; do shift; done
+      image="${1:-}"
       if ! printf '%s\n' "$image" | grep -Eq '^[^@]+@sha256:[0-9a-f]{64}$'; then
         echo "check-pins: line $lineno: unpinned base image '$image' (want name@sha256:<64 hex>)" >&2
         fail=1
