@@ -10,4 +10,5 @@ Makefile
 docs/
 scripts/check-pins.sh
 scripts/test-check-pins.sh
+scripts/test-nginx-conf.sh
 scripts/scan.sh
