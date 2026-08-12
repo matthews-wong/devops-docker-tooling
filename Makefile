@@ -5,7 +5,7 @@ DOCKER ?= docker
 BUILD_VERSION ?= dev
 BUILD_DATE ?= $(shell date -u +%Y-%m-%d)
 
-.PHONY: build build-release up down logs lint check-pins check-render test scan validate render
+.PHONY: build build-release up down logs lint check-pins check-render test scan validate render syntax
 
 build:
 	$(DOCKER) build -t docker-tooling-site .
@@ -32,6 +32,12 @@ render:
 lint:
 	hadolint Dockerfile
 
+# Parse-check every shell script; shellcheck runs too when installed
+syntax:
+	@set -e; for f in scripts/*.sh; do sh -n "$$f"; done; \
+	if command -v shellcheck >/dev/null 2>&1; then shellcheck scripts/*.sh; fi; \
+	echo "syntax: all scripts parse cleanly"
+
 check-pins:
 	scripts/check-pins.sh
 
@@ -48,5 +54,5 @@ test:
 scan:
 	scripts/scan.sh
 
-validate: lint check-pins check-render test render
+validate: lint syntax check-pins check-render test render
 	$(DOCKER) compose config --quiet
