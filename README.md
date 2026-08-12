@@ -12,9 +12,13 @@ are the only runtime dependencies.
 ```
 Dockerfile           # two stages: templates content, then serves it as nginx
 scripts/render.sh    # envsubst templating (sed fallback for local preview)
+scripts/check-pins.sh + test-check-pins.sh   # digest-pin gate + smoke tests
+scripts/scan.sh      # trivy misconfig/CVE/SBOM scan (optional tool)
 nginx.conf           # listens on 8080, tightly scoped static server
 content/             # demo static site (index.html + healthz endpoint)
 docker-compose.yml   # one service: build args, loopback port, read-only runtime
+docs/security.md     # CVE scan + SBOM workflow
+docs/runtime-capsule.md  # podman vs docker cheat sheet
 .dockerignore        # excludes git + working files from the build context
 ```
 
@@ -71,11 +75,16 @@ BUILD_VERSION=v1.2.0 ./scripts/render.sh > /tmp/index.html
 ## Validation
 
 ```bash
-make validate                                # hadolint + pin check + render
+make validate                                # hadolint + pin check + tests + render
 hadolint Dockerfile                          # image-lint (run locally)
 scripts/check-pins.sh                        # digest-pin check (part of validate)
+scripts/test-check-pins.sh                   # pin-check smoke tests (part of validate)
+scripts/scan.sh [image]                      # trivy scan (optional; skips if absent)
 docker compose config                        # syntax-check the compose file
 ```
+
+On a podman-only box, `make build DOCKER=podman` etc. work unchanged — see
+`docs/runtime-capsule.md`. For the CVE/SBOM story, see `docs/security.md`.
 
 This repo is validation-light on purpose: none of these steps need a build
 or a cluster.
