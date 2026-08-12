@@ -12,9 +12,11 @@ are the only runtime dependencies.
 ```
 Dockerfile           # two stages: templates content, then serves it as nginx
 scripts/render.sh    # envsubst templating (sed fallback for local preview)
+scripts/check-render.sh + neg-check-render.sh   # placeholder-drift gate + test
 scripts/check-pins.sh + test-check-pins.sh   # digest-pin gate + smoke tests
+scripts/test-nginx-conf.sh # asserts the server config invariants hold
 scripts/scan.sh      # trivy misconfig/CVE/SBOM scan (optional tool)
-nginx.conf           # listens on 8080, tightly scoped static server
+nginx.conf           # listens on 8080, hardened static server (headers, caching)
 content/             # demo static site (index.html + healthz endpoint)
 docker-compose.yml   # one service: build args, loopback port, read-only runtime
 docs/security.md     # CVE scan + SBOM workflow
@@ -67,18 +69,30 @@ BUILD_VERSION=v1.2.0 ./scripts/render.sh > /tmp/index.html
 - **Hardened compose service** — the service runs with a read-only root
   filesystem (nginx's cache/pid dirs live on small `tmpfs` mounts), all
   kernel capabilities dropped, `no-new-privileges`, an `init` process to
-  reap zombies, CPU/memory limits, and the port bound to `127.0.0.1` only —
-  the same posture you would want for a real deployment.
+  reap zombies, CPU/memory limits, log rotation, and the port bound to
+  `127.0.0.1` only — the same posture you would want for a real deployment.
+- **Server hardening** — nginx hides its version, sends baseline security
+  headers (nosniff, frame denial, referrer policy), caps request bodies,
+  and applies a sane cache policy (assets cacheable for an hour, the
+  `/healthz` probe never cached). `scripts/test-nginx-conf.sh` locks these
+  invariants into `make validate`.
+- **Template drift guard** — `scripts/check-render.sh` fails validation if
+  the rendered page still contains any `${...}` placeholder, so a template
+  variable that `render.sh` doesn't know about is caught at check time
+  instead of shipping a page full of raw placeholders.
 - **Small context** — `.dockerignore` keeps local working files and the
   git metadata out of the build.
 
 ## Validation
 
 ```bash
-make validate                                # hadolint + pin check + tests + render
+make validate                                # lint + syntax + checks + tests + render
 hadolint Dockerfile                          # image-lint (run locally)
+make syntax                                  # sh -n on every script (shellcheck if present)
 scripts/check-pins.sh                        # digest-pin check (part of validate)
+scripts/check-render.sh                      # placeholder-drift check (part of validate)
 scripts/test-check-pins.sh                   # pin-check smoke tests (part of validate)
+scripts/test-nginx-conf.sh                   # nginx config invariant tests (part of validate)
 scripts/scan.sh [image]                      # trivy scan (optional; skips if absent)
 docker compose config                        # syntax-check the compose file
 ```
