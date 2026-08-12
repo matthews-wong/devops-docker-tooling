@@ -6,6 +6,12 @@
 **/*.md~
 *.swp
 .DS_Store
+# Local env overrides (compose reads these, the image build never does)
+.env
+
+# Generated scan artifacts (scripts/scan.sh)
+sbom.cdx.json
+
 Makefile
 docs/
 scripts/check-pins.sh
