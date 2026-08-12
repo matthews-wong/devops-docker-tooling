@@ -14,7 +14,7 @@ Dockerfile           # two stages: templates content, then serves it as nginx
 scripts/render.sh    # envsubst templating (sed fallback for local preview)
 nginx.conf           # listens on 8080, tightly scoped static server
 content/             # demo static site (index.html + healthz endpoint)
-docker-compose.yml   # one service: build args, port, healthcheck, restart
+docker-compose.yml   # one service: build args, loopback port, read-only runtime
 .dockerignore        # excludes git + working files from the build context
 ```
 
@@ -60,6 +60,11 @@ BUILD_VERSION=v1.2.0 ./scripts/render.sh > /tmp/index.html
   does not need a privileged container.
 - **Healthcheck built in** — the image declares a `HEALTHCHECK` using
   `wget` against `/healthz`, so `docker run` / compose get liveness for free.
+- **Hardened compose service** — the service runs with a read-only root
+  filesystem (nginx's cache/pid dirs live on small `tmpfs` mounts), all
+  kernel capabilities dropped, `no-new-privileges`, an `init` process to
+  reap zombies, CPU/memory limits, and the port bound to `127.0.0.1` only —
+  the same posture you would want for a real deployment.
 - **Small context** — `.dockerignore` keeps local working files and the
   git metadata out of the build.
 
