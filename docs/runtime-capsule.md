@@ -26,7 +26,10 @@ make up   DOCKER=podman           # podman compose up -d --build
   feature-complete than the compose v2 spec, but fine for the single-service
   file in this repo. `deploy.resources` limits are honored by
   `podman-compose` as container resource limits; `init:`, `read_only:` and
-  `tmpfs:` map directly to podman flags.
+  `tmpfs:` map directly to podman flags. The `logging` block in this repo's
+  compose file is the one docker-ism: podman does not implement the `json-file`
+  driver, so podman-compose ignores (or warns on) it rather than applying log
+  rotation — podman's default journald logging has its own size caps.
 
 ## Where the CLI actually differs
 

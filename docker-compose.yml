@@ -24,6 +24,13 @@ services:
     cap_drop: [ALL]
     security_opt:
       - no-new-privileges:true
+    # json-file logs grow unbounded by default; cap size and count so a
+    # long-lived demo box doesn't fill its disk with access logs.
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
     deploy:
       resources:
         limits:
