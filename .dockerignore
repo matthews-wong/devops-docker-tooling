@@ -1,7 +1,13 @@
-# keep the build context small: no git metadata, no local working notes,
-# no editor cruft
+# Keep the build context minimal: the Dockerfile only COPYs scripts/render.sh
+# and content/, so everything else is local tooling that must not reach the
+# daemon. No git metadata, no working notes, no editor cruft.
 .git
 **/.gitignore
 **/*.md~
 *.swp
 .DS_Store
+Makefile
+docs/
+scripts/check-pins.sh
+scripts/test-check-pins.sh
+scripts/scan.sh
