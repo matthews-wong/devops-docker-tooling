@@ -5,7 +5,7 @@ DOCKER ?= docker
 BUILD_VERSION ?= dev
 BUILD_DATE ?= $(shell date -u +%Y-%m-%d)
 
-.PHONY: build build-release up down logs lint check-pins test scan validate render
+.PHONY: build build-release up down logs lint check-pins check-render test scan validate render
 
 build:
 	$(DOCKER) build -t docker-tooling-site .
@@ -35,13 +35,18 @@ lint:
 check-pins:
 	scripts/check-pins.sh
 
+# Render the template and fail on any leftover ${...} placeholder
+check-render:
+	scripts/check-render.sh
+
 test:
 	scripts/test-check-pins.sh
 	scripts/test-nginx-conf.sh
+	sh scripts/neg-check-render.sh
 
 # Optional: trivy misconfig/CVE/SBOM scan (skips gracefully if trivy is absent)
 scan:
 	scripts/scan.sh
 
-validate: lint check-pins test render
+validate: lint check-pins check-render test render
 	$(DOCKER) compose config --quiet
