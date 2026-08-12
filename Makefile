@@ -37,6 +37,7 @@ check-pins:
 
 test:
 	scripts/test-check-pins.sh
+	scripts/test-nginx-conf.sh
 
 # Optional: trivy misconfig/CVE/SBOM scan (skips gracefully if trivy is absent)
 scan:
