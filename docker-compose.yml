@@ -6,6 +6,29 @@ services:
         # Stamp the image at build time: BUILD_VERSION=v1.2.0 docker compose build
         BUILD_VERSION: ${BUILD_VERSION:-dev}
         BUILD_DATE: ${BUILD_DATE:-unknown}
+    image: docker-tooling-site:${BUILD_VERSION:-dev}
     ports:
-      - "8080:8080"
+      # Binding to the loopback interface keeps the demo off the LAN;
+      # drop the 127.0.0.1 prefix to expose it network-wide.
+      - "127.0.0.1:8080:8080"
     restart: unless-stopped
+    init: true
+    # Static content is baked into the image; nothing at runtime needs a
+    # writable root filesystem except nginx's cache/pid dirs (tmpfs below).
+    read_only: true
+    tmpfs:
+      - /var/cache/nginx:rw,noexec,nosuid,size=16m
+      - /var/run:rw,noexec,nosuid,size=4m
+    # nginx binds an unprivileged port and drops privileges itself: it needs
+    # no kernel capabilities at all.
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          cpus: "0.50"
+          memory: 128M
+        reservations:
+          cpus: "0.10"
+          memory: 32M
