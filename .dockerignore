@@ -9,6 +9,8 @@
 Makefile
 docs/
 scripts/check-pins.sh
+scripts/check-render.sh
+scripts/neg-check-render.sh
 scripts/test-check-pins.sh
 scripts/test-nginx-conf.sh
 scripts/scan.sh
