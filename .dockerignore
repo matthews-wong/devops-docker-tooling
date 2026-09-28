@@ -20,3 +20,4 @@ scripts/neg-check-render.sh
 scripts/test-check-pins.sh
 scripts/test-nginx-conf.sh
 scripts/scan.sh
+scripts/smoke-test.sh
