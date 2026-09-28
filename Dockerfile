@@ -31,8 +31,11 @@ LABEL org.opencontainers.image.title="docker-tooling static site" \
 
 # nginx needs writable cache/pid dirs; runtime user comes from the base image.
 # Remove the default config so the port + server block below are the only one.
+# nginx.conf sets `pid /run/nginx.pid;` - list both /var/run and /run
+# explicitly (rather than relying on one being a symlink to the other) since
+# BusyBox chown's recursive symlink handling isn't guaranteed to dereference.
 RUN rm -f /etc/nginx/conf.d/default.conf && \
-    chown -R nginx:nginx /var/cache/nginx /var/run
+    chown -R nginx:nginx /var/cache/nginx /var/run /run
 
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /src/ /usr/share/nginx/html/
