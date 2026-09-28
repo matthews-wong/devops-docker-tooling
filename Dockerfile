@@ -5,7 +5,7 @@
 # so no extra packages are needed to template content at build time.
 # Digest-pinned: reproducible builds even if the tag moves. Bump with
 # `docker buildx imagetools inspect nginx:1.27-alpine` and update both stages.
-FROM nginx:1.27-alpine@sha256:65645c7bb6a0661892a8b03b89d0743208a18dd2f3f17a54ef4b76fb8e2f2a10 AS build
+FROM nginx:1.29-alpine@sha256:5616878291a2eed594aee8db4dade5878cf7edcb475e59193904b198d9b830de AS build
 
 ARG BUILD_VERSION=dev
 ARG BUILD_DATE=unknown
@@ -16,7 +16,7 @@ RUN /tmp/render.sh /src/index.html > /src/index.html.rendered \
     && mv /src/index.html.rendered /src/index.html
 
 # ---- runtime: minimal static server ----
-FROM nginx:1.27-alpine@sha256:65645c7bb6a0661892a8b03b89d0743208a18dd2f3f17a54ef4b76fb8e2f2a10
+FROM nginx:1.29-alpine@sha256:5616878291a2eed594aee8db4dade5878cf7edcb475e59193904b198d9b830de
 
 # Redeclare build args in this stage (ARG scope is per-stage) so the
 # provenance labels below can record what the image was stamped with.
