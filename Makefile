@@ -5,7 +5,7 @@ DOCKER ?= docker
 BUILD_VERSION ?= dev
 BUILD_DATE ?= $(shell date -u +%Y-%m-%d)
 
-.PHONY: build build-release up down logs lint check-pins check-render test scan validate render syntax
+.PHONY: build build-release up down logs lint check-pins check-render test scan validate render syntax smoke-test
 
 build:
 	$(DOCKER) build -t docker-tooling-site .
@@ -53,6 +53,11 @@ test:
 # Optional: trivy misconfig/CVE/SBOM scan (skips gracefully if trivy is absent)
 scan:
 	scripts/scan.sh
+
+# Build the image and exercise it end to end (needs a Docker daemon)
+smoke-test: build
+	$(DOCKER) tag docker-tooling-site docker-tooling-site:ci
+	scripts/smoke-test.sh docker-tooling-site:ci
 
 validate: lint syntax check-pins check-render test render
 	$(DOCKER) compose config --quiet
