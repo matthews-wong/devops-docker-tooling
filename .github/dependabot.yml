@@ -1,0 +1,21 @@
+version: 2
+updates:
+  # Bumps the base image tag; the digest pin in the Dockerfile still needs
+  # a manual `docker buildx imagetools inspect` refresh (see scripts/check-pins.sh).
+  - package-ecosystem: docker
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      docker-images:
+        patterns:
+          - "*"
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      github-actions:
+        patterns:
+          - "*"
