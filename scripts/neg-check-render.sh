@@ -5,10 +5,12 @@ cd "$(dirname "$0")/.."
 d="$(mktemp -d)"
 trap 'rm -r "$d"' EXIT INT TERM
 cp content/index.html "$d/index.html"
+# shellcheck disable=SC2016  # literal placeholder text, not a real expansion
 printf '<p>${FRESH_VAR}</p>\n' >> "$d/index.html"
 # render.sh takes the source path as $1; check-render.sh defaults to
 # content/index.html, so simulate drift by pointing render.sh at the
 # polluted copy directly.
+# shellcheck disable=SC2016  # matching the literal placeholder above
 if BUILD_VERSION=x BUILD_DATE=y scripts/render.sh "$d/index.html" | grep -q '\${FRESH_VAR}'; then
   echo "negative: render keeps unknown placeholder as expected"
 else
