@@ -1,5 +1,7 @@
 # devops-docker-tooling
 
+[![validate](https://github.com/matthews-wong/devops-docker-tooling/actions/workflows/validate.yml/badge.svg)](https://github.com/matthews-wong/devops-docker-tooling/actions/workflows/validate.yml)
+
 A small, dependency-free container image for a static site, built as a
 reference for Dockerfile hygiene: a pinned base, a multi-stage build that
 templates the page with build metadata, an unprivileged runtime user, an
@@ -15,12 +17,14 @@ scripts/render.sh    # envsubst templating (sed fallback for local preview)
 scripts/check-render.sh + neg-check-render.sh   # placeholder-drift gate + test
 scripts/check-pins.sh + test-check-pins.sh   # digest-pin gate + smoke tests
 scripts/test-nginx-conf.sh # asserts the server config invariants hold
+scripts/smoke-test.sh # boots the built image and polls / + /healthz
 scripts/scan.sh      # trivy misconfig/CVE/SBOM scan (optional tool)
 nginx.conf           # listens on 8080, hardened static server (headers, caching)
 content/             # demo static site (index.html + healthz endpoint)
 docker-compose.yml   # one service: build args, loopback port, read-only runtime
 docs/security.md     # CVE scan + SBOM workflow
 docs/runtime-capsule.md  # podman vs docker cheat sheet
+.github/workflows/validate.yml  # lint + offline checks + real build/smoke test
 .dockerignore        # excludes git + working files from the build context
 ```
 
@@ -95,7 +99,12 @@ scripts/test-check-pins.sh                   # pin-check smoke tests (part of va
 scripts/test-nginx-conf.sh                   # nginx config invariant tests (part of validate)
 scripts/scan.sh [image]                      # trivy scan (optional; skips if absent)
 docker compose config                        # syntax-check the compose file
+make smoke-test                              # build the image, run it, poll / and /healthz
 ```
+
+CI runs the same offline checks on every push/PR, then a second job builds
+the real image and runs `make smoke-test` against it — see
+`.github/workflows/validate.yml`.
 
 On a podman-only box, `make build DOCKER=podman` etc. work unchanged — see
 `docs/runtime-capsule.md`. For the CVE/SBOM story, see `docs/security.md`.
