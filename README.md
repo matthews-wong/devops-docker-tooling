@@ -16,6 +16,7 @@ Dockerfile           # two stages: templates content, then serves it as nginx
 scripts/render.sh    # envsubst templating (sed fallback for local preview)
 scripts/check-render.sh + neg-check-render.sh   # placeholder-drift gate + test
 scripts/check-pins.sh + test-check-pins.sh   # digest-pin gate + smoke tests
+scripts/check-version-drift.sh + test-check-version-drift.sh   # base-tag drift gate + tests
 scripts/test-nginx-conf.sh # asserts the server config invariants hold
 scripts/smoke-test.sh # boots the built image and polls / + /healthz
 scripts/scan.sh      # trivy misconfig/CVE/SBOM scan (optional tool)
@@ -96,7 +97,9 @@ hadolint Dockerfile                          # image-lint (run locally)
 make syntax                                  # sh -n on every script (shellcheck if present)
 scripts/check-pins.sh                        # digest-pin check (part of validate)
 scripts/check-render.sh                      # placeholder-drift check (part of validate)
+scripts/check-version-drift.sh               # base-tag drift check (part of validate)
 scripts/test-check-pins.sh                   # pin-check smoke tests (part of validate)
+scripts/test-check-version-drift.sh          # drift-check smoke tests (part of validate)
 scripts/test-nginx-conf.sh                   # nginx config invariant tests (part of validate)
 scripts/scan.sh [image]                      # trivy scan (optional; skips if absent)
 docker compose config                        # syntax-check the compose file
