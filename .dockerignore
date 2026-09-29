@@ -16,8 +16,10 @@ Makefile
 docs/
 scripts/check-pins.sh
 scripts/check-render.sh
+scripts/check-version-drift.sh
 scripts/neg-check-render.sh
 scripts/test-check-pins.sh
+scripts/test-check-version-drift.sh
 scripts/test-nginx-conf.sh
 scripts/scan.sh
 scripts/smoke-test.sh

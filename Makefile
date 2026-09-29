@@ -51,6 +51,7 @@ check-version-drift:
 
 test:
 	scripts/test-check-pins.sh
+	scripts/test-check-version-drift.sh
 	scripts/test-nginx-conf.sh
 	sh scripts/neg-check-render.sh
 
