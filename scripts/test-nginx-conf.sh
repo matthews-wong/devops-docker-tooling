@@ -37,6 +37,7 @@ assert_present "request body capped"          'client_max_body_size[[:space:]]+1
 assert_present "nosniff header"               'X-Content-Type-Options[[:space:]]+nosniff'
 assert_present "frame denial header"          'X-Frame-Options[[:space:]]+DENY'
 assert_present "referrer policy header"       'Referrer-Policy[[:space:]]+no-referrer'
+assert_present "permissions policy header"    'Permissions-Policy'
 assert_present "liveness probe endpoint"      'location[[:space:]]+=[[:space:]]+/healthz'
 assert_present "probe not cached"             'Cache-Control[[:space:]]+"no-store"'
 assert_present "static assets cacheable"      'expires[[:space:]]+1h;'
