@@ -38,8 +38,8 @@ jobs:
       - name: Validate compose config
         run: docker compose config --quiet
 
-      - name: Run offline checks (pins, render, config invariants)
-        run: make syntax check-pins check-render test
+      - name: Run offline checks (pins, render, drift, config invariants)
+        run: make syntax check-pins check-render check-version-drift test
 
   build-and-smoke-test:
     needs: lint
