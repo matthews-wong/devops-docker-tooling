@@ -5,7 +5,7 @@ DOCKER ?= docker
 BUILD_VERSION ?= dev
 BUILD_DATE ?= $(shell date -u +%Y-%m-%d)
 
-.PHONY: build build-release up down logs lint check-pins check-render test scan validate render syntax smoke-test
+.PHONY: build build-release up down logs lint check-pins check-render check-version-drift test scan validate render syntax smoke-test
 
 build:
 	$(DOCKER) build -t docker-tooling-site .
@@ -45,6 +45,10 @@ check-pins:
 check-render:
 	scripts/check-render.sh
 
+# Fail if README/docs/landing-page prose still names the old base tag
+check-version-drift:
+	scripts/check-version-drift.sh
+
 test:
 	scripts/test-check-pins.sh
 	scripts/test-nginx-conf.sh
@@ -59,5 +63,5 @@ smoke-test: build
 	$(DOCKER) tag docker-tooling-site docker-tooling-site:ci
 	scripts/smoke-test.sh docker-tooling-site:ci
 
-validate: lint syntax check-pins check-render test render
+validate: lint syntax check-pins check-render check-version-drift test render
 	$(DOCKER) compose config --quiet
