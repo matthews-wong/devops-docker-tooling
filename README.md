@@ -76,7 +76,8 @@ BUILD_VERSION=v1.2.0 ./scripts/render.sh > /tmp/index.html
   reap zombies, CPU/memory limits, log rotation, and the port bound to
   `127.0.0.1` only — the same posture you would want for a real deployment.
 - **Server hardening** — nginx hides its version, sends baseline security
-  headers (nosniff, frame denial, referrer policy), caps request bodies,
+  headers (nosniff, frame denial, referrer policy, a locked-down
+  permissions policy), caps request bodies,
   and applies a sane cache policy (assets cacheable for an hour, the
   `/healthz` probe never cached). `scripts/test-nginx-conf.sh` locks these
   invariants into `make validate`.
