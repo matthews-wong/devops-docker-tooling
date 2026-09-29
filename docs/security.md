@@ -35,14 +35,14 @@ scripts/scan.sh docker-tooling-site:v1.2.0   # scan a specific built image
 ## Policy
 
 - HIGH/CRITICAL findings fail the scan (exit 1); MEDIUM/LOW are reported but
-  don't block — the demo image is a pinned `nginx:1.27-alpine`, so any new
+  don't block — the demo image is a pinned `nginx:1.29-alpine`, so any new
   CVE is a known, reviewable delta.
 - Trivy is optional tooling: if it isn't installed, `scripts/scan.sh` prints
   a note and exits 0 so `make validate` stays green in thin environments.
   Install it and the gate hardens automatically.
 - Digest-pinning both `FROM` stages (enforced by `scripts/check-pins.sh`)
   means a scan result maps to exactly one base layer set — a scan of
-  `@sha256:65645c...` today is reproducible tomorrow.
+  `@sha256:5616878...` today is reproducible tomorrow.
 
 ## What this does not cover
 

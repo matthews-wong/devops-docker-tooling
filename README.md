@@ -58,7 +58,7 @@ BUILD_VERSION=v1.2.0 ./scripts/render.sh > /tmp/index.html
 ## Design notes
 
 - **Digest-pinned base image** — both stages reference
-  `nginx:1.27-alpine@sha256:...`; the tag is kept for readability but the
+  `nginx:1.29-alpine@sha256:...`; the tag is kept for readability but the
   digest is what the build and runtime actually resolve to, so a rebuild
   today and in six months produces the same base layer even if the tag
   moves. `scripts/check-pins.sh` enforces this on every `make validate`
