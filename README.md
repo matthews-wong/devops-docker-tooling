@@ -104,6 +104,7 @@ scripts/test-nginx-conf.sh                   # nginx config invariant tests (par
 scripts/scan.sh [image]                      # trivy scan (optional; skips if absent)
 docker compose config                        # syntax-check the compose file
 make smoke-test                              # build the image, run it, poll / and /healthz
+make clean                                   # remove images left by build/smoke-test + sbom.cdx.json
 ```
 
 CI runs the same offline checks on every push/PR, then a second job builds

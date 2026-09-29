@@ -5,7 +5,7 @@ DOCKER ?= docker
 BUILD_VERSION ?= dev
 BUILD_DATE ?= $(shell date -u +%Y-%m-%d)
 
-.PHONY: build build-release up down logs lint check-pins check-render check-version-drift test scan validate render syntax smoke-test
+.PHONY: build build-release up down logs lint check-pins check-render check-version-drift test scan validate render syntax smoke-test clean
 
 build:
 	$(DOCKER) build -t docker-tooling-site .
@@ -66,3 +66,8 @@ smoke-test: build
 
 validate: lint syntax check-pins check-render check-version-drift test render
 	$(DOCKER) compose config --quiet
+
+# Remove images left behind by build/smoke-test and any local scan output
+clean:
+	-$(DOCKER) rmi docker-tooling-site:ci docker-tooling-site 2>/dev/null
+	rm -f sbom.cdx.json
