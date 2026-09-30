@@ -40,6 +40,7 @@ assert_present "referrer policy header"       'Referrer-Policy[[:space:]]+no-ref
 assert_present "permissions policy header"    'Permissions-Policy'
 assert_present "liveness probe endpoint"      'location[[:space:]]+=[[:space:]]+/healthz'
 assert_present "probe not cached"             'Cache-Control[[:space:]]+"no-store"'
+assert_present "dotfiles hidden"              'location[[:space:]]+~[[:space:]]+/\\\.'
 assert_present "static assets cacheable"      'expires[[:space:]]+1h;'
 
 exit "$fail"
