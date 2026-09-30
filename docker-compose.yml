@@ -36,6 +36,8 @@ services:
         limits:
           cpus: "0.50"
           memory: 128M
+          # A static server needs a handful of processes; cap runaway forks.
+          pids: 64
         reservations:
           cpus: "0.10"
           memory: 32M
