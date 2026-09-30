@@ -74,18 +74,20 @@ BUILD_VERSION=v1.2.0 ./scripts/render.sh > /tmp/index.html
 - **Hardened compose service** — the service runs with a read-only root
   filesystem (nginx's cache/pid dirs live on small `tmpfs` mounts), all
   kernel capabilities dropped, `no-new-privileges`, an `init` process to
-  reap zombies, CPU/memory limits, log rotation, and the port bound to
+  reap zombies, CPU/memory/process limits, log rotation, and the port bound to
   `127.0.0.1` only — the same posture you would want for a real deployment.
 - **Server hardening** — nginx hides its version, sends baseline security
   headers (nosniff, frame denial, referrer policy, a locked-down
   permissions policy), caps request bodies,
-  and applies a sane cache policy (assets cacheable for an hour, the
+  accepts only GET/HEAD, 404s dotfile paths, and applies a sane cache policy (assets cacheable for an hour, the
   `/healthz` probe never cached). `scripts/test-nginx-conf.sh` locks these
   invariants into `make validate`.
 - **Template drift guard** — `scripts/check-render.sh` fails validation if
   the rendered page still contains any `${...}` placeholder, so a template
   variable that `render.sh` doesn't know about is caught at check time
   instead of shipping a page full of raw placeholders.
+- **Graceful shutdown** — the image sets `STOPSIGNAL SIGQUIT` so nginx
+  finishes in-flight requests on `docker stop`.
 - **Small context** — `.dockerignore` keeps local working files and the
   git metadata out of the build.
 
