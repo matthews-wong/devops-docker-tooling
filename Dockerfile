@@ -45,5 +45,8 @@ USER nginx
 
 EXPOSE 8080
 
+# nginx drains connections on SIGQUIT; the default SIGTERM cuts them off.
+STOPSIGNAL SIGQUIT
+
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
   CMD wget -qO- http://127.0.0.1:8080/healthz || exit 1
