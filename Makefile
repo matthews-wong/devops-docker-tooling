@@ -5,9 +5,15 @@ DOCKER ?= docker
 BUILD_VERSION ?= dev
 BUILD_DATE ?= $(shell date -u +%Y-%m-%d)
 
-.PHONY: build build-release up down logs lint check-pins check-render check-version-drift test scan validate render syntax smoke-test clean
+.DEFAULT_GOAL := help
 
-build:
+.PHONY: help build build-release up down logs lint check-pins check-render check-version-drift test scan validate render syntax smoke-test clean
+
+# List targets that carry a leading '## ' comment
+help:
+	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | sed -E 's/^([a-z-]+):.*## /\1\t/' | column -t -s "$$(printf '\t')"
+
+build: ## Build the image
 	$(DOCKER) build -t docker-tooling-site .
 
 build-release:
@@ -15,10 +21,10 @@ build-release:
 		--build-arg BUILD_DATE=$(BUILD_DATE) \
 		-t docker-tooling-site:$(BUILD_VERSION) .
 
-up:
+up: ## Start the compose stack
 	$(DOCKER) compose up -d --build
 
-down:
+down: ## Stop the compose stack
 	$(DOCKER) compose down
 
 logs:
@@ -60,14 +66,14 @@ scan:
 	scripts/scan.sh
 
 # Build the image and exercise it end to end (needs a Docker daemon)
-smoke-test: build
+smoke-test: build ## Build and exercise the image (needs Docker)
 	$(DOCKER) tag docker-tooling-site docker-tooling-site:ci
 	scripts/smoke-test.sh docker-tooling-site:ci
 
-validate: lint syntax check-pins check-render check-version-drift test render
+validate: lint syntax check-pins check-render check-version-drift test render ## Run every local check
 	$(DOCKER) compose config --quiet
 
 # Remove images left behind by build/smoke-test and any local scan output
-clean:
+clean: ## Remove local images and scan output
 	-$(DOCKER) rmi docker-tooling-site:ci docker-tooling-site 2>/dev/null
 	rm -f sbom.cdx.json
