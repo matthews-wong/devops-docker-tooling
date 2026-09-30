@@ -22,4 +22,8 @@ scripts/test-check-pins.sh
 scripts/test-check-version-drift.sh
 scripts/test-nginx-conf.sh
 scripts/scan.sh
-scripts/smoke-test.sh
+scripts/smoke-test.sh.github
+.editorconfig
+.env.example
+LICENSE
+SECURITY.md
