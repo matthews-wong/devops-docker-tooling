@@ -4,7 +4,7 @@
 # nginx:alpine ships envsubst (used by its /etc/nginx/templates feature),
 # so no extra packages are needed to template content at build time.
 # Digest-pinned: reproducible builds even if the tag moves. Bump with
-# `docker buildx imagetools inspect nginx:1.29-alpine` and update both stages.
+# `docker buildx imagetools inspect nginx:1.31-alpine` and update both stages.
 FROM nginx:1.31-alpine@sha256:df221db836e1754089190208cee7eeda94f233197056426eda74a43ab1abeac2 AS build
 
 ARG BUILD_VERSION=dev

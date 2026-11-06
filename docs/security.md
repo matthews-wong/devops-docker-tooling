@@ -35,7 +35,7 @@ scripts/scan.sh docker-tooling-site:v1.2.0   # scan a specific built image
 ## Policy
 
 - HIGH/CRITICAL findings fail the scan (exit 1); MEDIUM/LOW are reported but
-  don't block — the demo image is a pinned `nginx:1.29-alpine`, so any new
+  don't block — the demo image is a pinned `nginx:1.31-alpine`, so any new
   CVE is a known, reviewable delta.
 - Trivy is optional tooling: if it isn't installed, `scripts/scan.sh` prints
   a note and exits 0 so `make validate` stays green in thin environments.
