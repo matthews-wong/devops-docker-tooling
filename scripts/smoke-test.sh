@@ -10,6 +10,7 @@ image="${1:-docker-tooling-site:ci}"
 port="${SMOKE_PORT:-18080}"
 container_name="docker-tooling-site-smoke-$$"
 
+# shellcheck disable=SC2329  # invoked via trap; newer shellcheck flags it as unused
 cleanup() {
   # shellcheck disable=SC2317  # invoked via trap, not unreachable
   docker rm -f "$container_name" >/dev/null 2>&1 || true
